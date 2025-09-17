@@ -25,8 +25,8 @@ export default {
   data () {
     return {
       userForm: {
-        name: '',
-        pwd: ''
+        name: 'zs',
+        pwd: '123'
       },
       userRules: {
         name: [
@@ -45,10 +45,18 @@ export default {
       this.$refs.userRef.resetFields()
     },
     login () {
-      this.$refs.userRef.validate(valid => {
+      this.$refs.userRef.validate(async valid => {
         // console.log(valid)
-        if (!valid) return 0
+        if (!valid) return
         // 登录操作
+        const { data: res } = await this.$axios.post('/user/login', this.$qs.stringify(this.userForm))
+        console.log(res)
+        // 1.登录成功后,获取token并保存到sessionStorage
+        window.sessionStorage.setItem('token', res.data.token)
+        // 登录成功提示
+        this.$msg.success(res.msg)
+        // 页面跳转
+        await this.$router.push('/home')
       }
       )
     }
