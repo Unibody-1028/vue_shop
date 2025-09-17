@@ -1,6 +1,10 @@
 <template>
     <div class="login_container">
-      <div class="login_box"></div>
+      <div class="login_box">
+        <div class="logo">
+          <img src="../assets/Python_logo.png" alt="">
+        </div>
+      </div>
     </div>
 </template>
 
@@ -23,5 +27,20 @@ export default {
     left: 50%;
     top: 50%;
     transform: translate(-50%,-50%);
+  }
+  .logo{
+    height: 120px;
+    width: 200px;
+    border: 1px solid #ffffff;
+    padding: 10px;
+    border-radius: 30px;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    box-shadow: 0 0 20px #fff;
+    img{
+      width: 100%;
+      height: 100%;
+    }
   }
 </style>
