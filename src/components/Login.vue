@@ -4,12 +4,12 @@
         <div class="logo">
           <img src="../assets/Python_logo.png" alt="Python标志">
         </div>
-        <el-form class="login_form_style" label-width="0px">
-            <el-form-item >
-                <el-input prefix-icon="el-icon-user-solid" placeholder="用户名"></el-input>
+        <el-form :rules="userRules" :model="userForm" class="login_form_style" label-width="0px">
+            <el-form-item prop="name">
+                <el-input v-model="userForm.name" prefix-icon="el-icon-user-solid" placeholder="用户名"></el-input>
             </el-form-item>
-            <el-form-item >
-                <el-input prefix-icon="el-icon-lock" placeholder="密码"></el-input>
+            <el-form-item prop="pwd">
+                <el-input show-password v-model="userForm.pwd" prefix-icon="el-icon-lock" placeholder="密码"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" class="login_btn" style="width: 45%;">登录</el-button>
@@ -22,7 +22,23 @@
 
 <script>
 export default {
-
+  data () {
+    return {
+      userForm: {
+        name: 'jack',
+        pwd: '123'
+      },
+      userRules: {
+        name: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 2, max: 6, message: '长度在 2 到 6 个字符', trigger: 'blur' }
+        ],
+        pwd: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
+        ]
+      }
+    }
+  }
 }
 </script>
 
