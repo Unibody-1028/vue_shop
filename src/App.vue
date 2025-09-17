@@ -1,5 +1,8 @@
 <template>
-  <div id="app"></div>
+  <div id="app">
+    <h1>My project</h1>
+
+  </div>
 </template>
 
 <script>
