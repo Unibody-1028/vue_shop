@@ -4,7 +4,7 @@
         <div class="logo">
           <img src="../assets/Python_logo.png" alt="Python标志">
         </div>
-        <el-form :rules="userRules" :model="userForm" class="login_form_style" label-width="0px">
+        <el-form ref="userRef" :rules="userRules" :model="userForm" class="login_form_style" label-width="0px">
             <el-form-item prop="name">
                 <el-input v-model="userForm.name" prefix-icon="el-icon-user-solid" placeholder="用户名"></el-input>
             </el-form-item>
@@ -12,8 +12,8 @@
                 <el-input show-password v-model="userForm.pwd" prefix-icon="el-icon-lock" placeholder="密码"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" class="login_btn" style="width: 45%;">登录</el-button>
-                <el-button type="primary" class="reset_btn" style="width: 45%;">重置</el-button>
+                <el-button type="primary" @click="login" class="login_btn" style="width: 45%;">登录</el-button>
+                <el-button @click="restForm" type="primary" class="reset_btn" style="width: 45%;">重置</el-button>
             </el-form-item>
         </el-form>
       </div>
@@ -25,8 +25,8 @@ export default {
   data () {
     return {
       userForm: {
-        name: 'jack',
-        pwd: '123'
+        name: '',
+        pwd: ''
       },
       userRules: {
         name: [
@@ -37,6 +37,20 @@ export default {
           { required: true, message: '请输入密码', trigger: 'blur' }
         ]
       }
+    }
+  },
+  methods: {
+    restForm () {
+      // console.log(this)
+      this.$refs.userRef.resetFields()
+    },
+    login () {
+      this.$refs.userRef.validate(valid => {
+        // console.log(valid)
+        if (!valid) return 0
+        // 登录操作
+      }
+      )
     }
   }
 }
