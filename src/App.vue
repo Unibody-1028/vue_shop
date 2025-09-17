@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <h1>My project</h1>
-
+    <!-- 路由占位符 -->
+    <router-view></router-view>
   </div>
 </template>
 

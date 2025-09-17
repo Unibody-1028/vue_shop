@@ -1,13 +1,12 @@
-
 <template>
-    <div></div>
+    <div>登录组件</div>
 </template>
 
-
-<script setup lang="ts">
-
+<script >
+export default {
+}
 </script>
 
-<style scoped>
+<style scoped lang="less">
 
 </style>
