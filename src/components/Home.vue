@@ -1,5 +1,16 @@
-<script setup lang="ts">
-
+<script >
+export default {
+  methods: {
+    logout () {
+      window.sessionStorage.clear()
+      this.$router.push('/login')
+    },
+    test () {
+      const { data: res } = this.$axios.get('/user/get_user_info')
+      console.log(res)
+    }
+  }
+}
 </script>
 
 <template>
@@ -9,7 +20,8 @@
       <img src="../assets/Python_logo.png">
       <span>电子商城后台管理系统</span>
     </div>
-    <el-button type="primary" plain>退出</el-button>
+<!--    <el-button type="primary" plain @click="test">测试</el-button>-->
+    <el-button type="primary" plain @click="logout">退出</el-button>
   </el-header>
   <el-container>
     <el-aside width="200px">Aside</el-aside>
