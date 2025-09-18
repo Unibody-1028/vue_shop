@@ -85,7 +85,8 @@ export default {
     </el-aside>
 
     <el-main>
-      Main
+      <router-view></router-view> <!--增加路由占位符-->
+
     </el-main>
   </el-container>
   </el-container>
