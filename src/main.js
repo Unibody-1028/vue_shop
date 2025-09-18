@@ -12,6 +12,14 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.prototype.$axios = axios
 Vue.prototype.$qs = qs
+// 设置一个请求拦截器用来设置token
+axios.interceptors.request.use(config => {
+  const tokenStr = window.sessionStorage.getItem('token')
+  if (tokenStr) {
+    config.headers.token = tokenStr
+  }
+  return config
+})
 // axios.defaults.baseURL = 'http://localhost:8088'
 new Vue({
   router,
