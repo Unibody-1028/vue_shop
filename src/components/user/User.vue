@@ -8,10 +8,10 @@
 
     <el-card >
       <div style="margin-top: 5px;">
-        <el-row>
+        <el-row :gutter="40">
           <el-col :span="8">
-            <el-input placeholder="请输入内容"  class="input-with-select">
-              <el-button slot="append" icon="el-icon-search"></el-button>
+            <el-input placeholder="请输入用户名" v-model="queryInfo.name" >
+              <el-button slot="append" icon="el-icon-search" @click="searchUser"></el-button>
             </el-input>
           </el-col>
           <el-col :span="2">
@@ -20,7 +20,7 @@
         </el-row>
         <el-row >
             <el-table :data="userList" border style="width: 100%">
-
+                <el-table-column type="index" label="索引"></el-table-column>
                 <el-table-column prop="id" label="ID"></el-table-column>
                 <el-table-column prop="name" label="用户名"></el-table-column>
                 <el-table-column prop="nick_name" label="昵称"></el-table-column>
@@ -63,6 +63,7 @@ export default {
     return {
       userList: [],
       queryInfo: {
+        name: '',
         pnum: 1,
         nsize: 2
       },
@@ -87,6 +88,10 @@ export default {
     },
     handleCurrentChange (val) {
       this.queryInfo.pnum = val
+      this.getUserList()
+    },
+    searchUser () {
+      this.queryInfo.pnum = 1
       this.getUserList()
     }
   }
