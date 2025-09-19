@@ -1,3 +1,55 @@
+<template>
+  <el-container class="home-container">
+    <el-header>
+      <div>
+        <img src="../assets/Python_logo.png" alt="">
+        <span>电子商城后台管理系统</span>
+      </div>
+  <!--    <el-button type="primary" plain @click="test">测试</el-button>-->
+      <el-button type="primary" plain @click="logout">退出</el-button>
+    </el-header>
+
+  <el-container>
+    <el-aside width="200px">
+      <el-menu
+      :default-active="activePath"
+      class="el-menu-vertical-demo"
+      @open="handleOpen"
+      @close="handleClose"
+      background-color="#545c64"
+      text-color='#fff'
+      active-text-color="#409EFF"
+      :unique-opened="true"
+      router
+      >   <!-- 修改菜单栏激活时的颜色 + 保持一个子菜单展开-->
+        <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">
+          <!--    一级菜单      -->
+          <template slot="title">
+            <i :class="iconObj[item.id+' ']"></i>
+            <span>{{ item.name }}</span>
+          </template>
+          <!--    二级菜单      -->
+          <el-menu-item :index="subItem.path"
+          v-for="subItem in item.children"
+          :key="subItem.id"
+          @click="saveActivePath"
+          >
+            <i :class="iconObj[item.id+' ']"></i>
+            <span>{{subItem.name}}</span>
+          </el-menu-item>
+
+        </el-submenu>
+      </el-menu>
+    </el-aside>
+
+    <el-main>
+      <router-view></router-view> <!--增加路由占位符-->
+
+    </el-main>
+  </el-container>
+  </el-container>
+</template>
+
 <script >
 export default {
   data () {
@@ -15,11 +67,13 @@ export default {
         '31 ': 'el-icon-goods',
         '32 ': 'el-icon-goods',
         '33 ': 'el-icon-goods'
-      }
+      },
+      activePath: ''
     }
   },
   created () {
     this.getMenulist()
+    this.activePath = window.sessionStorage.getItem('activePath')
   },
   methods: {
     logout () {
@@ -40,58 +94,14 @@ export default {
       const { data: res } = await this.$axios.get('/menu')
       console.log(res)
       this.menuList = res.data
+    },
+    saveActivePath (ap) {
+      window.sessionStorage.setItem('activePath', ap.index)
+      this.activePath = ap.index
     }
   }
 }
 </script>
-
-<template>
-  <el-container class="home-container">
-    <el-header>
-      <div>
-        <img src="../assets/Python_logo.png" alt="">
-        <span>电子商城后台管理系统</span>
-      </div>
-  <!--    <el-button type="primary" plain @click="test">测试</el-button>-->
-      <el-button type="primary" plain @click="logout">退出</el-button>
-    </el-header>
-
-  <el-container>
-    <el-aside width="200px">
-      <el-menu
-      default-active="2"
-      class="el-menu-vertical-demo"
-      @open="handleOpen"
-      @close="handleClose"
-      background-color="#545c64"
-      text-color='#fff'
-      active-text-color="#409EFF"
-      unique-opened="unique-opened"
-      router
-      >   <!-- 修改菜单栏激活时的颜色 + 保持一个子菜单展开-->
-        <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">
-          <!--    一级菜单      -->
-          <template slot="title">
-            <i :class="iconObj[item.id+' ']"></i>
-            <span>{{ item.name }}</span>
-          </template>
-          <!--    二级菜单      -->
-          <el-menu-item :index="subItem.path" v-for="subItem in item.children" :key="subItem.id">
-            <i :class="iconObj[item.id+' ']"></i>
-            <span>{{subItem.name}}</span>
-          </el-menu-item>
-
-        </el-submenu>
-      </el-menu>
-    </el-aside>
-
-    <el-main>
-      <router-view></router-view> <!--增加路由占位符-->
-
-    </el-main>
-  </el-container>
-  </el-container>
-</template>
 
 <style lang="less" scoped>
   .home-container{
