@@ -45,11 +45,11 @@
 
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage4"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
+          :current-page="queryInfo.pnum"
+          :page-sizes="[1, 2, 5, 10]"
+          :page-size="queryInfo.nsize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
+          :total="total"
             style="display: flex; justify-content: center;" > //居中样式
         </el-pagination>
       </div>
@@ -61,7 +61,12 @@
 export default {
   data () {
     return {
-      userList: []
+      userList: [],
+      queryInfo: {
+        pnum: 1,
+        nsize: 2
+      },
+      total: 0
     }
   },
   created () {
@@ -69,10 +74,20 @@ export default {
   },
   methods: {
     async getUserList () {
-      const { data: res } = await this.$axios.get('/user/user_list')
-      console.log(res)
-      console.log(res.data.users)
+      const { data: res } = await this.$axios.get('/user/user_list',
+        { params: this.queryInfo })
+      if (res.status !== 200) return this.$msg.error(res.msg)
+      console.log(res.data)
+      this.total = res.data.totalPage
       this.userList = res.data.users
+    },
+    handleSizeChange (val) {
+      this.queryInfo.nsize = val
+      this.getUserList()
+    },
+    handleCurrentChange (val) {
+      this.queryInfo.pnum = val
+      this.getUserList()
     }
   }
 }
