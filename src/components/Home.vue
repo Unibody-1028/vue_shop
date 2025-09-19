@@ -67,6 +67,7 @@ export default {
       text-color='#fff'
       active-text-color="#409EFF"
       unique-opened="unique-opened"
+      router
       >   <!-- 修改菜单栏激活时的颜色 + 保持一个子菜单展开-->
         <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">
           <!--    一级菜单      -->
@@ -75,7 +76,7 @@ export default {
             <span>{{ item.name }}</span>
           </template>
           <!--    二级菜单      -->
-          <el-menu-item :index="subItem.id+''" v-for="subItem in item.children" :key="subItem.id">
+          <el-menu-item :index="subItem.path" v-for="subItem in item.children" :key="subItem.id">
             <i :class="iconObj[item.id+' ']"></i>
             <span>{{subItem.name}}</span>
           </el-menu-item>
