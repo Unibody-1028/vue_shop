@@ -1,7 +1,3 @@
-<script>
-
-</script>
-
 <template>
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -23,15 +19,30 @@
           </el-col>
         </el-row>
         <el-row >
-            <el-table :data="tableData" border style="width: 100%">
+            <el-table :data="userList" border style="width: 100%">
+
                 <el-table-column prop="id" label="ID"></el-table-column>
                 <el-table-column prop="name" label="用户名"></el-table-column>
                 <el-table-column prop="nick_name" label="昵称"></el-table-column>
                 <el-table-column prop="phone" label="电话"></el-table-column>
                 <el-table-column prop="email" label="邮箱"></el-table-column>
+
+                <el-table-column label="操作">
+                  <template slot-scope="scope">
+                    <el-button
+                      size="mini"
+                      @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                    <el-button
+                      size="mini"
+                      type="danger"
+                      @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                  </template>
+                </el-table-column>
+
             </el-table>
         </el-row>
         <el-pagination
+
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage4"
@@ -45,6 +56,27 @@
     </el-card>
   </div>
 </template>
+
+<script>
+export default {
+  data () {
+    return {
+      userList: []
+    }
+  },
+  created () {
+    this.getUserList()
+  },
+  methods: {
+    async getUserList () {
+      const { data: res } = await this.$axios.get('/user/user_list')
+      console.log(res)
+      console.log(res.data.users)
+      this.userList = res.data.users
+    }
+  }
+}
+</script>
 
 <style scoped lang="less">
 .el-table{

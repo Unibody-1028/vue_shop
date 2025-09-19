@@ -92,7 +92,7 @@ export default {
     },
     async getMenulist () {
       const { data: res } = await this.$axios.get('/menu')
-      console.log(res)
+      // console.log(res)
       this.menuList = res.data
     },
     saveActivePath (ap) {
