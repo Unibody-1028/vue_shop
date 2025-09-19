@@ -50,29 +50,29 @@
           :page-size="queryInfo.nsize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
-            style="display: flex; justify-content: center;" > //居中样式
+          style="display: flex; justify-content: center;" > //居中样式
         </el-pagination>
       </div>
     </el-card>
     <!--  新增用户窗口  -->
     <el-dialog title="新增用户" :visible.sync="addDialogVisible" width="30% " :before-close="handleClose">
-      <el-form :model="addForm" ref="addFormRef" label-width="100px" >
-        <el-form-item label="账号">
+      <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" >
+        <el-form-item label="用户名" prop="name">
           <el-input v-model="addForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="昵称">
+        <el-form-item label="昵称" prop="nick_name">
           <el-input v-model="addForm.nick_name"></el-input>
         </el-form-item>
-        <el-form-item label="密码">
-          <el-input v-model="addForm.pwd"></el-input>
+        <el-form-item label="密码" prop="pwd">
+          <el-input v-model="addForm.pwd" ></el-input>
         </el-form-item>
-        <el-form-item label="确认密码">
+        <el-form-item label="确认密码" prop="repwd">
           <el-input v-model="addForm.repwd"></el-input>
         </el-form-item>
-        <el-form-item label="电话">
-          <el-input v-model="addForm.phone"></el-input>
+        <el-form-item label="电话" prop="phone">
+          <el-input v-model="addForm.phone" ></el-input>
         </el-form-item>
-        <el-form-item label="邮箱">
+        <el-form-item label="邮箱" prop="email">
           <el-input v-model="addForm.email"></el-input>
         </el-form-item>
 
@@ -88,6 +88,32 @@
 <script>
 export default {
   data () {
+    const validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.addForm.pwd) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        return callback()
+      }
+    }
+    const validatePhone = (rule, value, callback) => {
+      // 定义正则表达式验证手机号是否有效
+      const phoneReg = /^1[3-9]\d{9}$/
+      if (phoneReg.test(value)) {
+        return callback()
+      }
+      return callback(new Error('请输入有效的手机号'))
+    }
+    const validateEmail = (rule, value, callback) => {
+      // 定义正则表达式验证邮箱是否有效
+      const emailReg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      if (emailReg.test(value)) {
+        return callback()
+      }
+      return callback(new Error('请输入有效的邮箱'))
+    }
+
     return {
       userList: [],
       queryInfo: {
@@ -97,7 +123,32 @@ export default {
       },
       total: 0,
       addDialogVisible: false,
-      addForm: {}
+      addForm: {},
+      addFormRules: {
+        name: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 2, max: 6, message: '长度在2-6个字符之间', trigger: 'blur' }
+        ],
+        nick_name: [
+          { required: true, message: '请输入昵称', trigger: 'blur' },
+          { min: 2, max: 6, message: '长度在2-6个字符之间', trigger: 'blur' }
+        ],
+        pwd: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 16, message: '长度在6-16个字符之间', trigger: 'blur' }
+        ],
+        repwd: [
+          { required: true, message: '请输入确认', trigger: 'blur' },
+          { validator: validatePass2, trigger: 'blur' }
+        ],
+        phone: [
+          { validator: validatePhone, trigger: 'blur' }
+        ],
+        email: [
+          { validator: validateEmail, trigger: 'blur' }
+        ]
+
+      }
     }
   },
   created () {
@@ -107,7 +158,7 @@ export default {
     async getUserList () {
       const { data: res } = await this.$axios.get('/user/user_list',
         { params: this.queryInfo })
-      if (res.status !== 200) return this.$msg.error(res.msg)
+      if (res.status !== 200) return this.$message.error(res.msg)
       console.log(res.data)
       this.total = res.data.totalPage
       this.userList = res.data.users
@@ -123,7 +174,8 @@ export default {
     searchUser () {
       this.queryInfo.pnum = 1
       this.getUserList()
-    }
+    },
+    handleClose () {}
   }
 }
 </script>
