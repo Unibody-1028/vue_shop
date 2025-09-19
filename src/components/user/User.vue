@@ -31,11 +31,16 @@
                   <template slot-scope="scope">
                     <el-button
                       size="mini"
-                      @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                      @click="showEdit(scope.row)">编辑</el-button>
+                    <el-button
+                      size="mini"
+                      type="warning"
+                      @click="handleReset(scope.$index, scope.row)">重置密码</el-button>
                     <el-button
                       size="mini"
                       type="danger"
                       @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+
                   </template>
                 </el-table-column>
 
@@ -54,7 +59,7 @@
         </el-pagination>
       </div>
     </el-card>
-    <!--  新增用户窗口  -->
+    <!--  新增用户信息窗口  -->
     <el-dialog title="新增用户" :visible.sync="addDialogVisible" width="30% " :before-close="addFormClose">
       <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" >
         <el-form-item label="用户名" prop="name">
@@ -82,6 +87,30 @@
         <el-button type="primary" @click="addUser">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!--  修改用户信息窗口  -->
+    <el-dialog title="修改用户信息" :visible.sync="editDialogVisible" width="30% " :before-close="editFormClose">
+      <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="100px" >
+        <el-form-item label="用户名" prop="name" >
+          <el-input v-model="editForm.name" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="昵称" prop="nick_name" >
+          <el-input v-model="editForm.nick_name" disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" prop="phone">
+          <el-input v-model="editForm.phone" ></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="editForm.email"></el-input>
+        </el-form-item>
+
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editFormClose">取 消</el-button>
+        <el-button type="primary" @click="editUser">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -123,7 +152,9 @@ export default {
       },
       total: 0,
       addDialogVisible: false,
+      editDialogVisible: false,
       addForm: {},
+      editForm: {},
       addFormRules: {
         name: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -164,7 +195,14 @@ export default {
       this.userList = res.data.users
     },
     handleSizeChange (val) {
-      this.queryInfo.nsize = val
+      this.queryInfo.nsize = val // 更新当前页大小
+      // 切换页大小时，先计算新的最大合法页码
+      const maxPage = Math.ceil(this.total / val) || 1
+      // 若当前页码超出新的最大页码，重置为最后一页
+      if (this.queryInfo.pnum > maxPage) {
+        this.queryInfo.pnum = maxPage
+      }
+      // 发起请求（此时页码已确保合法）
       this.getUserList()
     },
     handleCurrentChange (val) {
@@ -197,6 +235,15 @@ export default {
         // 重新获取用户列表
         this.getUserList()
       })
+    },
+    // 显示编辑用户窗口
+    async showEdit (row) {
+      // 发送请求,获取数据库实时数据
+      const { data: res } = await this.$axios.get('/user/user', { params: { id: row.id } })
+      if (res.status !== 200) return this.$msg.error(res.msg)
+      this.editForm = res.data
+      // 显示窗口
+      this.editDialogVisible = true
     }
   }
 }
