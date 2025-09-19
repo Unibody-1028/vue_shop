@@ -19,7 +19,7 @@
           </el-col>
         </el-row>
         <el-row >
-            <el-table :data="userList" border style="width: 100%">
+            <el-table :data="userList" border style="width: 100%" >
                 <el-table-column type="index" label="索引"></el-table-column>
                 <el-table-column prop="id" label="ID"></el-table-column>
                 <el-table-column prop="name" label="用户名"></el-table-column>
@@ -55,7 +55,7 @@
       </div>
     </el-card>
     <!--  新增用户窗口  -->
-    <el-dialog title="新增用户" :visible.sync="addDialogVisible" width="30% " :before-close="handleClose">
+    <el-dialog title="新增用户" :visible.sync="addDialogVisible" width="30% " :before-close="addFormClose">
       <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" >
         <el-form-item label="用户名" prop="name">
           <el-input v-model="addForm.name"></el-input>
@@ -78,8 +78,8 @@
 
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+        <el-button @click="addFormClose">取 消</el-button>
+        <el-button type="primary" @click="addFormClose">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -138,7 +138,7 @@ export default {
           { min: 6, max: 16, message: '长度在6-16个字符之间', trigger: 'blur' }
         ],
         repwd: [
-          { required: true, message: '请输入确认', trigger: 'blur' },
+          { required: true, message: '请输入确认密码', trigger: 'blur' },
           { validator: validatePass2, trigger: 'blur' }
         ],
         phone: [
@@ -175,7 +175,11 @@ export default {
       this.queryInfo.pnum = 1
       this.getUserList()
     },
-    handleClose () {}
+    // 重置增加用户表单
+    addFormClose () {
+      this.$refs.addFormRef.resetFields()
+      this.addDialogVisible = false
+    }
   }
 }
 </script>
