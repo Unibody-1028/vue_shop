@@ -66,8 +66,8 @@
         <el-form-item label="密码" prop="pwd">
           <el-input v-model="addForm.pwd" ></el-input>
         </el-form-item>
-        <el-form-item label="确认密码" prop="repwd">
-          <el-input v-model="addForm.repwd"></el-input>
+        <el-form-item label="确认密码" prop="real_pwd">
+          <el-input v-model="addForm.real_pwd"></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="phone">
           <el-input v-model="addForm.phone" ></el-input>
@@ -79,7 +79,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addFormClose">取 消</el-button>
-        <el-button type="primary" @click="addFormClose">确 定</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -137,7 +137,7 @@ export default {
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, max: 16, message: '长度在6-16个字符之间', trigger: 'blur' }
         ],
-        repwd: [
+        real_pwd: [
           { required: true, message: '请输入确认密码', trigger: 'blur' },
           { validator: validatePass2, trigger: 'blur' }
         ],
@@ -179,6 +179,24 @@ export default {
     addFormClose () {
       this.$refs.addFormRef.resetFields()
       this.addDialogVisible = false
+    },
+    // 新增用户
+    addUser () {
+      // 发送请求前验证数据是否规范
+      this.$refs.addFormRef.validate(async valid => {
+        if (!valid) return
+        // 发送请求
+        const { data: res } = await this.$axios.post('/user/user', this.$qs.stringify(this.addForm))
+        // 验证结果
+        if (res.status !== 200) return this.$msg.error(res.msg)
+        this.$msg.success(res.msg)
+        // 隐藏窗口
+        this.addDialogVisible = false
+        // 重置表单
+        this.$refs.addFormRef.resetFields()
+        // 重新获取用户列表
+        this.getUserList()
+      })
     }
   }
 }
