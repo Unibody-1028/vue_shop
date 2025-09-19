@@ -15,7 +15,7 @@
             </el-input>
           </el-col>
           <el-col :span="2">
-            <el-button type="primary" icon="el-icon-circle-plus-outline">新增用户</el-button>
+            <el-button type="primary" icon="el-icon-circle-plus-outline" @click="addDialogVisible=true">新增用户</el-button>
           </el-col>
         </el-row>
         <el-row >
@@ -54,6 +54,34 @@
         </el-pagination>
       </div>
     </el-card>
+    <!--  新增用户窗口  -->
+    <el-dialog title="新增用户" :visible.sync="addDialogVisible" width="30% " :before-close="handleClose">
+      <el-form :model="addForm" ref="addFormRef" label-width="100px" >
+        <el-form-item label="账号">
+          <el-input v-model="addForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="昵称">
+          <el-input v-model="addForm.nick_name"></el-input>
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input v-model="addForm.pwd"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码">
+          <el-input v-model="addForm.repwd"></el-input>
+        </el-form-item>
+        <el-form-item label="电话">
+          <el-input v-model="addForm.phone"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱">
+          <el-input v-model="addForm.email"></el-input>
+        </el-form-item>
+
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -67,7 +95,9 @@ export default {
         pnum: 1,
         nsize: 2
       },
-      total: 0
+      total: 0,
+      addDialogVisible: false,
+      addForm: {}
     }
   },
   created () {
