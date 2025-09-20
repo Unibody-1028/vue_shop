@@ -25,7 +25,7 @@ export default {
   data () {
     return {
       userForm: {
-        name: 'jack',
+        name: 'lvbu',
         pwd: '123456'
       },
       userRules: {
