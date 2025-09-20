@@ -166,6 +166,7 @@ export default {
       editForm: {},
       delName: '',
       delNickName: '',
+      delId: 0,
       addFormRules: {
         name: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -278,9 +279,21 @@ export default {
     },
     // 显示删除窗口
     showDel (row) {
+      this.delId = row.id
       this.delName = row.name
       this.delNickName = row.nick_name
       this.delDialogVisible = true
+    },
+    // 删除用户
+    async delUser () {
+      const { data: res } = await this.$axios.delete('/user/user', {
+        params: { id: this.delId } // params 专门用于传递 URL 查询参数
+      })
+      console.log(res)
+      if (res.status !== 200) return this.$msg.error(res.msg)
+      this.$msg.success(res.msg)
+      this.delDialogVisible = false
+      this.getUserList() // 删除后刷新列表
     }
   }
 }
