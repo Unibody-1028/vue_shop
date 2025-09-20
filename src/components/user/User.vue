@@ -39,7 +39,7 @@
                     <el-button
                       size="mini"
                       type="danger"
-                      @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                      @click="showDel(scope.row)">删除</el-button>
 
                   </template>
                 </el-table-column>
@@ -89,7 +89,7 @@
     </el-dialog>
 
     <!--  修改用户信息窗口  -->
-    <el-dialog title="修改用户信息" :visible.sync="editDialogVisible" width="30% " :before-close="editFormClose">
+    <el-dialog title="修改用户信息" :visible.sync="editDialogVisible" width="30% " >
       <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="100px" >
         <el-form-item label="用户名" prop="name" >
           <el-input v-model="editForm.name" :disabled="true"></el-input>
@@ -108,6 +108,14 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible=false">取 消</el-button>
         <el-button type="primary" @click="editUser">保 存</el-button>
+      </span>
+    </el-dialog>
+    <!--  删除用户信息  -->
+    <el-dialog title="删除用户" :visible.sync="delDialogVisible" width="30%">
+      <span>确定要删除 账户:{{delName}} 昵称:{{delNickName}} 吗</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="delDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="delUser">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -153,8 +161,11 @@ export default {
       total: 0,
       addDialogVisible: false,
       editDialogVisible: false,
+      delDialogVisible: false,
       addForm: {},
       editForm: {},
+      delName: '',
+      delNickName: '',
       addFormRules: {
         name: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -264,6 +275,12 @@ export default {
         // 重新获取用户列表
         this.getUserList()
       })
+    },
+    // 显示删除窗口
+    showDel (row) {
+      this.delName = row.name
+      this.delNickName = row.nick_name
+      this.delDialogVisible = true
     }
   }
 }
