@@ -106,8 +106,8 @@
 
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editFormClose">取 消</el-button>
-        <el-button type="primary" @click="editUser">确 定</el-button>
+        <el-button @click="editDialogVisible=false">取 消</el-button>
+        <el-button type="primary" @click="editUser">保 存</el-button>
       </span>
     </el-dialog>
 
@@ -179,6 +179,14 @@ export default {
           { validator: validateEmail, trigger: 'blur' }
         ]
 
+      },
+      editFormRules: {
+        phone: [
+          { validator: validatePhone, trigger: 'blur' }
+        ],
+        email: [
+          { validator: validateEmail, trigger: 'blur' }
+        ]
       }
     }
   },
@@ -244,6 +252,18 @@ export default {
       this.editForm = res.data
       // 显示窗口
       this.editDialogVisible = true
+    },
+    // 修改用户内容
+    editUser () {
+      this.$refs.editFormRef.validate(async valid => {
+        if (!valid) return
+        const { data: res } = await this.$axios.put('/user/user', this.$qs.stringify(this.editForm))
+        if (res.status !== 200) return this.$msg.error((res.msg))
+        this.$msg.success(res.msg)
+        this.editDialogVisible = false
+        // 重新获取用户列表
+        this.getUserList()
+      })
     }
   }
 }
