@@ -35,7 +35,7 @@
                     <el-button
                       size="mini"
                       type="warning"
-                      @click="handleReset(scope.$index, scope.row)">重置密码</el-button>
+                      @click="showReset(scope.row)">重置密码</el-button>
                     <el-button
                       size="mini"
                       type="danger"
@@ -112,10 +112,18 @@
     </el-dialog>
     <!--  删除用户信息  -->
     <el-dialog title="删除用户" :visible.sync="delDialogVisible" width="30%">
-      <span>确定要删除 账户:{{delName}} 昵称:{{delNickName}} 吗</span>
+      <span>确定要删除 账户:{{delName}} 昵称:{{delNickName}} 的用户吗</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="delDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="delUser">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!--  重置用户密码  -->
+    <el-dialog title="重置用户密码" :visible.sync="resetDialogVisible" width="30%">
+      <span>确定要重置 账户:{{resetName}} 昵称:{{resetNickName}} 的密码吗</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="resetDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="resetUser">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -162,11 +170,15 @@ export default {
       addDialogVisible: false,
       editDialogVisible: false,
       delDialogVisible: false,
+      resetDialogVisible: false,
       addForm: {},
       editForm: {},
       delName: '',
       delNickName: '',
       delId: 0,
+      resetName: '',
+      resetNickName: '',
+      resetId: 0,
       addFormRules: {
         name: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -294,6 +306,20 @@ export default {
       this.$msg.success(res.msg)
       this.delDialogVisible = false
       this.getUserList() // 删除后刷新列表
+    },
+    // 显示重置用户密码窗口
+    showReset (row) {
+      this.resetId = row.id
+      this.resetName = row.name
+      this.resetNickName = row.nick_name
+      this.resetDialogVisible = true
+    },
+    async resetUser () {
+      const { data: res } = await this.$axios.get('/user/reset', { params: { id: this.resetId } })
+      if (res.status !== 200) return this.$msg.error(res.msg)
+      this.$msg.success(res.msg)
+      this.resetDialogVisible = false
+      console.log(res)
     }
   }
 }
