@@ -38,31 +38,28 @@
           </el-table-column>
 
           <el-table-column type="index"></el-table-column>
-          <el-table-column prop="id" label="ID"></el-table-column>
-          <el-table-column prop="name" label="角色名称"></el-table-column>
-          <el-table-column prop="desc" label="角色详情"></el-table-column>
+          <el-table-column prop="id" label="ID" width="100px"></el-table-column>
+          <el-table-column prop="name" label="角色名称" width="150px"></el-table-column>
+          <el-table-column prop="desc" label="角色详情" width="500px"></el-table-column>
           <el-table-column prop="level" label="操作">
             <template slot-scope="scope">
-              <el-button
-                size="mini"
-                @click="showEdit(scope.row)">编辑
-              </el-button>
-              <el-button
-                size="mini"
-                type="warning"
-                @click="showReset(scope.row)">分配权限
-              </el-button>
-              <el-button
-                size="mini"
-                type="danger"
-                @click="showDel(scope.row)">删除
+              <el-button type="success" @click="showEdit(scope.row)" icon="el-icon-edit">编辑</el-button>
+              <el-button type="warning" @click="showMenuDialog(scope.row)" icon="el-icon-delete">分配权限</el-button>
+              <el-button type="danger" @click="MenuDialog(scope.row)" icon="el-icon-settings">删除
               </el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-row>
-
     </el-card>
+    <el-dialog title="分配权限" :visible.sync="menudialogVisible" width="30%" :before-close="handleClose">
+      <el-tree :data="menuList" :props="menuProps" show-checkbox></el-tree>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -70,11 +67,18 @@
 export default {
   data() {
     return {
-      roleList: []
+      roleList: [],
+      menudialogVisible: false,
+      menuProps: {
+        children: 'children',
+        label: 'name'
+      },
+      menuList: []
     }
   },
   created() {
     this.getRolelist()
+    this.getMenulist()
   },
   methods: {
     async getRolelist() {
@@ -90,8 +94,8 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-        // console.log(row.id)
-        // console.log(mid)
+          // console.log(row.id)
+          // console.log(mid)
           const {data: resp} = await this.$axios.get(`/del_menu/${row.id}/${mid}`)
           if (resp.status !== 200) return this.$msg.error(resp.msg)
           // this.getRolelist()
@@ -106,6 +110,14 @@ export default {
             message: '已取消删除'
           })
         })
+    },
+    showMenuDialog(row) {
+      this.menudialogVisible = true
+    },
+    async getMenulist() {
+      const {data: resp} = await this.$axios.get('/menu')
+      if (resp.status !== 200) return this.$msg.error(resp.msg)
+      this.menuList = resp.data
     }
   }
 }
