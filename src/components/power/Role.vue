@@ -20,9 +20,18 @@
         <el-table :data="roleList" border style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
-              <el-row v-for="m in scope.row.menu" :key="m.id">
-                <el-col :span="10">{{ m.name }}</el-col>
-                <el-col :span="14"><span v-for="sm in m.children" :key="sm.id">{{sm.name}}</span></el-col>
+              <el-row :class="['bottom',i===0?'top':'','rcenter']" v-for="(m,i) in scope.row.menu" :key="m.id">
+                <el-col :span="4">
+                  <el-tag style="width: 120px; text-align: center ">
+                    {{ m.name }}
+                  </el-tag>
+                  <i class="el-icon-caret-right" :span="4" style="margin-left: 60px;"></i>
+                </el-col>
+                <el-col :span="4">
+                  <el-tag v-for="sm in m.children" :key="sm.id" type="success" style="width: 120px;text-align: center">
+                    {{ sm.name }}
+                  </el-tag>
+                </el-col>
               </el-row>
             </template>
           </el-table-column>
@@ -78,5 +87,20 @@ export default {
 
 </script>
 <style scoped lang="less">
+.top {
+  border-top: 1px solid #eeeeee;
+}
 
+.bottom {
+  border-bottom: 1px solid #eeeeee;
+}
+
+.el-tag {
+  margin: 10px;
+}
+
+.rcenter {
+  display: flex;
+  align-items: center;
+}
 </style>
