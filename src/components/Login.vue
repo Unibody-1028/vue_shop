@@ -26,7 +26,7 @@ export default {
     return {
       userForm: {
         name: 'lvbu',
-        pwd: '123'
+        pwd: '123456'
       },
       userRules: {
         name: [
