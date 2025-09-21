@@ -9,7 +9,7 @@
     <!--    内容显示-->
     <el-card>
       <!--      新增角色按钮-->
-      <el-row :gutter="40" >
+      <el-row :gutter="40">
         <el-col :span="2">
           <el-button type="primary" icon="el-icon-circle-plus-outline" @click="addDialogVisible=true">新增角色
           </el-button>
@@ -17,7 +17,16 @@
       </el-row>
       <!--表格数据-->
       <el-row style="margin-top: 5px;">
-        <el-table :data="roleList" border style="width: 100%" >
+        <el-table :data="roleList" border style="width: 100%">
+          <el-table-column type="expand">
+            <template slot-scope="scope">
+              <el-row v-for="m in scope.row.menu" :key="m.id">
+                <el-col :span="10">{{ m.name }}</el-col>
+                <el-col :span="14"><span v-for="sm in m.children" :key="sm.id">{{sm.name}}</span></el-col>
+              </el-row>
+            </template>
+          </el-table-column>
+
           <el-table-column type="index"></el-table-column>
           <el-table-column prop="id" label="ID"></el-table-column>
           <el-table-column prop="name" label="角色名称"></el-table-column>
