@@ -168,7 +168,7 @@ export default {
       queryInfo: {
         name: '',
         pnum: 1,
-        nsize: 2
+        nsize: 10
       },
       total: 0,
       addDialogVisible: false,

@@ -5,6 +5,8 @@ import Home from '../components/Home.vue'
 import Welcome from '../components/Welcome.vue'
 import User from '../components/user/User.vue'
 import Menu from '../components/power/Menu.vue'
+import Role from '../components/power/Role.vue'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -30,8 +32,12 @@ const routes = [
         component: User // 子路由组件:渲染User组件
       },
       {
-        path: '/role_list', // 子路由路径:URL匹配/user_list时触发
-        component: Menu // 子路由组件:渲染User组件
+        path: '/menu_list', // 子路由路径:URL匹配/menu_list时触发
+        component: Menu // 子路由组件:渲染Menu组件
+      },
+      {
+        path: '/role_list', // 子路由路径:URL匹配/role_list时触发
+        component: Role // 子路由组件:渲染Role组件
       }
     ]
 
