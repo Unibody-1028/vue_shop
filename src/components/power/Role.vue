@@ -52,8 +52,9 @@
         </el-table>
       </el-row>
     </el-card>
-    <el-dialog title="分配权限" :visible.sync="menudialogVisible" width="30%" :before-close="handleClose">
-      <el-tree :data="menuList" :props="menuProps" show-checkbox></el-tree>
+    <el-dialog title="分配权限" :visible.sync="menudialogVisible" width="30%" :before-close="dialogClose">
+      <el-tree :data="menuList" :props="menuProps" show-checkbox default-expand-all
+               :default-checked-keys="keyList" node-key="id"></el-tree>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
@@ -68,6 +69,7 @@ export default {
   data() {
     return {
       roleList: [],
+      keyList: [],
       menudialogVisible: false,
       menuProps: {
         children: 'children',
@@ -78,7 +80,6 @@ export default {
   },
   created() {
     this.getRolelist()
-    this.getMenulist()
   },
   methods: {
     async getRolelist() {
@@ -112,12 +113,27 @@ export default {
         })
     },
     showMenuDialog(row) {
+      // 显示分配权限窗口时,重新获得角色权限列表
+      this.getMenulist()
       this.menudialogVisible = true
+      this.getKeys(row.menu)
+      console.log(this.keyList)
     },
     async getMenulist() {
       const {data: resp} = await this.$axios.get('/menu')
       if (resp.status !== 200) return this.$msg.error(resp.msg)
       this.menuList = resp.data
+    },
+    getKeys(menu) {
+      menu.forEach(item => {
+        item.children.forEach(i => {
+          this.keyList.push(i.id)
+        })
+      })
+    },
+    dialogClose () {
+      this.keyList = []
+      this.menudialogVisible = false
     }
   }
 }
