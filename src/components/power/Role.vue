@@ -94,7 +94,8 @@ export default {
         // console.log(mid)
           const {data: resp} = await this.$axios.get(`/del_menu/${row.id}/${mid}`)
           if (resp.status !== 200) return this.$msg.error(resp.msg)
-          this.getRolelist()
+          // this.getRolelist()
+          row.menu = resp.data
           this.$message({
             type: 'success',
             message: '删除成功!'
