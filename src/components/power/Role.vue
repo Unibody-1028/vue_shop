@@ -22,13 +22,14 @@
             <template slot-scope="scope">
               <el-row :class="['bottom',i===0?'top':'','rcenter']" v-for="(m,i) in scope.row.menu" :key="m.id">
                 <el-col :span="4">
-                  <el-tag style="width: 120px; text-align: center ">
+                  <el-tag style="width: 120px; text-align: center " closable @click="removeMenu(scope.row,m.id)">
                     {{ m.name }}
                   </el-tag>
-                  <i class="el-icon-caret-right" :span="4" style="margin-left: 60px;"></i>
+                  <i class="el-icon-caret-right" :span="4" style="margin-left: 50px;"></i>
                 </el-col>
                 <el-col :span="4">
-                  <el-tag v-for="sm in m.children" :key="sm.id" type="success" style="width: 120px;text-align: center">
+                  <el-tag v-for="sm in m.children" :key="sm.id" type="success"
+                          style="width: 120px;text-align: center" closable @click="removeMenu(scope.row,sm.id)">
                     {{ sm.name }}
                   </el-tag>
                 </el-col>
@@ -81,6 +82,29 @@ export default {
       if (res.status !== 200) return this.$msg.error(res.msg)
       this.roleList = res.data
       return this.$msg.success(res.msg)
+    },
+    removeMenu(row, mid) {
+      this.$confirm('此操作将永久删除该权限, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async () => {
+        // console.log(row.id)
+        // console.log(mid)
+          const {data: resp} = await this.$axios.get(`/del_menu/${row.id}/${mid}`)
+          if (resp.status !== 200) return this.$msg.error(resp.msg)
+          this.getRolelist()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     }
   }
 }
