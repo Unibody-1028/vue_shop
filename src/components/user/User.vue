@@ -103,7 +103,7 @@
           <el-input v-model="editForm.name" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="昵称" prop="nick_name">
-          <el-input v-model="editForm.nick_name" disabled="true"></el-input>
+          <el-input v-model="editForm.nick_name" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="phone">
           <el-input v-model="editForm.phone"></el-input>
@@ -331,7 +331,7 @@ export default {
       if (res.status !== 200) return this.$msg.error(res.msg)
       this.$msg.success(res.msg)
       this.resetDialogVisible = false
-      console.log(res)
+      // console.log(res)
     },
     // 获取所有角色
     async getRole() {
