@@ -20,31 +20,30 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-table :data="userList" border style="width: 100%">
+          <el-table :data="userList" border fit>
             <el-table-column type="index" label="索引"></el-table-column>
             <el-table-column prop="id" label="ID"></el-table-column>
             <el-table-column prop="name" label="用户名"></el-table-column>
             <el-table-column prop="nick_name" label="昵称"></el-table-column>
             <el-table-column prop="phone" label="电话"></el-table-column>
             <el-table-column prop="email" label="邮箱"></el-table-column>
-
-            <el-table-column label="操作">
+            <el-table-column prop="role_name" label="角色名称"></el-table-column>
+            <el-table-column label="操作" width="240">
               <template slot-scope="scope">
                 <el-button
-                    size="mini"
-                    @click="showEdit(scope.row)">编辑
+                  size="mini"
+                  @click="showEdit(scope.row)">编辑
                 </el-button>
                 <el-button
-                    size="mini"
-                    type="warning"
-                    @click="showReset(scope.row)">重置密码
+                  size="mini"
+                  type="warning"
+                  @click="showReset(scope.row)">重置密码
                 </el-button>
                 <el-button
-                    size="mini"
-                    type="danger"
-                    @click="showDel(scope.row)">删除
+                  size="mini"
+                  type="danger"
+                  @click="showDel(scope.row)">删除
                 </el-button>
-
               </template>
             </el-table-column>
 
@@ -52,14 +51,14 @@
         </el-row>
         <el-pagination
 
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="queryInfo.pnum"
-            :page-sizes="[1, 2, 5, 10]"
-            :page-size="queryInfo.nsize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total"
-            style="display: flex; justify-content: center;"> //居中样式
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="queryInfo.pnum"
+          :page-sizes="[1, 2, 5, 10]"
+          :page-size="queryInfo.nsize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          style="display: flex; justify-content: center;"> //居中样式
         </el-pagination>
       </div>
     </el-card>
@@ -84,6 +83,11 @@
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="addForm.email"></el-input>
         </el-form-item>
+        <el-form-item label="角色">
+          <el-select v-model="addForm.role_name" placeholder="请选择角色">
+            <el-option :label="r.name" :value="r.id" v-for="r in roles" :key="r.id"></el-option>
+          </el-select>
+        </el-form-item>
 
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -107,7 +111,11 @@
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="editForm.email"></el-input>
         </el-form-item>
-
+        <el-form-item label="角色">
+          <el-select v-model="editForm.role_name" placeholder="请选择角色">
+            <el-option :label="r.name" :value="r.id" v-for="r in roles" :key="r.id"></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible=false">取 消</el-button>
@@ -183,6 +191,7 @@ export default {
       resetName: '',
       resetNickName: '',
       resetId: 0,
+      roles: [],
       addFormRules: {
         name: [
           {required: true, message: '请输入用户名', trigger: 'blur'},
@@ -220,6 +229,7 @@ export default {
   },
   created() {
     this.getUserList()
+    this.getRole()
   },
   methods: {
     async getUserList() {
@@ -304,7 +314,6 @@ export default {
       const {data: res} = await this.$axios.delete('/user/user', {
         params: {id: this.delId} // params 专门用于传递 URL 查询参数
       })
-      console.log(res)
       if (res.status !== 200) return this.$msg.error(res.msg)
       this.$msg.success(res.msg)
       this.delDialogVisible = false
@@ -323,6 +332,13 @@ export default {
       this.$msg.success(res.msg)
       this.resetDialogVisible = false
       console.log(res)
+    },
+    // 获取所有角色
+    async getRole() {
+      const {data: res} = await this.$axios.get('/role')
+      if (res.status !== 200) return this.$msg.error(res.msg)
+      this.roles = res.data
+      return this.$msg.success(res.msg)
     }
   }
 }
