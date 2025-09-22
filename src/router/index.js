@@ -6,6 +6,7 @@ import Welcome from '../components/Welcome.vue'
 import User from '../components/user/User.vue'
 import Menu from '../components/power/Menu.vue'
 import Role from '../components/power/Role.vue'
+import Cate from '../components/goods/Cate.vue'
 
 Vue.use(VueRouter)
 
@@ -38,6 +39,10 @@ const routes = [
       {
         path: '/role_list', // 子路由路径:URL匹配/role_list时触发
         component: Role // 子路由组件:渲染Role组件
+      },
+      {
+        path: '/cate_list', // 子路由路径:URL匹配/role_list时触发
+        component: Cate // 子路由组件:渲染Role组件
       }
     ]
 
