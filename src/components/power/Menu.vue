@@ -39,7 +39,7 @@ export default {
       const {data: res} = await this.$axios.get('/menu', {params: {type: 'list'}})
       if (res.status !== 200) return this.$msg.error(res.msg)
       this.menuList = res.data
-      return this.$msg.success(res.msg)
+      // return this.$msg.success(res.msg)
     }
   }
 }
