@@ -54,10 +54,11 @@
     </el-card>
     <el-dialog title="分配权限" :visible.sync="menudialogVisible" width="30%" :before-close="dialogClose">
       <el-tree :data="menuList" :props="menuProps" show-checkbox default-expand-all
-               :default-checked-keys="keyList" node-key="id"></el-tree>
+               :default-checked-keys="keyList" node-key="id" ref="treeRef">
+      </el-tree>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button @click="dialogClose()">取 消</el-button>
+        <el-button type="primary" @click="editMenu()">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -70,6 +71,7 @@ export default {
     return {
       roleList: [],
       keyList: [],
+      rid: 0,
       menudialogVisible: false,
       menuProps: {
         children: 'children',
@@ -86,38 +88,40 @@ export default {
       const {data: res} = await this.$axios.get('/role')
       if (res.status !== 200) return this.$msg.error(res.msg)
       this.roleList = res.data
-      return this.$msg.success(res.msg)
+      // console.log(this.roleList)
+      // return this.$msg.success(res.msg)
     },
     removeMenu(row, mid) {
       this.$confirm('此操作将永久删除该权限, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      })
-        .then(async () => {
-          // console.log(row.id)
-          // console.log(mid)
-          const {data: resp} = await this.$axios.get(`/del_menu/${row.id}/${mid}`)
-          if (resp.status !== 200) return this.$msg.error(resp.msg)
-          // this.getRolelist()
-          row.menu = resp.data
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
+      }).then(async () => {
+        // console.log(row.id)
+        // console.log(mid)
+        const {data: resp} = await this.$axios.get(`/del_menu/${row.id}/${mid}`)
+        if (resp.status !== 200) return this.$msg.error(resp.msg)
+        // this.getRolelist()
+        row.menu = resp.data
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
         })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     showMenuDialog(row) {
+      this.rid = row.id
       // 显示分配权限窗口时,重新获得角色权限列表
       this.getMenulist()
       this.menudialogVisible = true
       this.getKeys(row.menu)
-      console.log(this.keyList)
+
+      // console.log(this.keyList)
     },
     async getMenulist() {
       const {data: resp} = await this.$axios.get('/menu')
@@ -131,9 +135,24 @@ export default {
         })
       })
     },
-    dialogClose () {
+    dialogClose() {
       this.keyList = []
       this.menudialogVisible = false
+    },
+    async editMenu() {
+      // console.log(this.rid)
+      // console.log(this.$refs.treeRef.getHalfCheckedNodes())
+      // console.log(this.$refs.treeRef.getCheckedNodes())
+      const mids = [
+        ...this.$refs.treeRef.getHalfCheckedKeys(),
+        ...this.$refs.treeRef.getCheckedKeys()
+      ]
+      const midsStr = mids.join(',')
+      const {data: resp} = await this.$axios.post(`/set_menu/${this.rid}`, this.$qs.stringify({mids: midsStr}))
+      if (resp.status !== 200) return this.$msg.error(resp.msg)
+      this.$msg.success(resp.msg)
+      this.getRolelist()
+      this.dialogClose()
     }
   }
 }
