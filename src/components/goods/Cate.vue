@@ -24,7 +24,7 @@
             <el-tag v-else-if="scope.row.level===2" type="success">二级分类</el-tag>
             <el-tag v-else type="warning">三级分类</el-tag>
           </template>
-          <template slot="opt" slot-scope="scope">
+          <template slot="opt">
             <el-button size="mini" icon="el-icon-edit" type="primary">编辑</el-button>
             <el-button size="mini" icon="el-icon-delete" type="danger">删除</el-button>
           </template>
@@ -32,17 +32,17 @@
       </el-row>
 
     </el-card>
-    <el-dialog title="增加分类" :visible.sync="addCateDialogVisible" width="25%">
+    <el-dialog title="增加分类" :visible.sync="addCateDialogVisible" width="25%" @close="closeCateDialog">
       <el-form :model="addCateForm" :rules="addCateRules" ref="addCateRef" label-width="80px">
         <el-form-item label="分类名称" prop="name">
-          <el-input v-model="addCateForm.name" style="width: 240px"></el-input>
+          <el-input v-model="addCateForm.name"></el-input>
         </el-form-item>
         <el-form-item label="父类目录">
           <el-cascader
-            v-model="value"
+            v-model="selectKeys"
             :options="catePidList"
-            :props="{ expandTrigger: 'hover',label: 'name',value: 'id'}"
-            @change="handleChange">
+            :props="{ expandTrigger: 'hover',label: 'name',value: 'id',checkStrictly: true}"
+            @change="changeSeletor" clearable separator=">">
           </el-cascader>
         </el-form-item>
         <el-form-item>
@@ -72,11 +72,16 @@ export default {
         {label: '操作', type: 'template', template: 'opt'}
       ],
       addCateDialogVisible: false,
-      addCateForm: {},
+      addCateForm: {
+        name: '',
+        pid: 0,
+        level: 1
+      },
       addCateRules: {
         name: [{required: true, message: '请输入分类名称', trigger: 'blur'}]
       },
-      catePidList: []
+      catePidList: [],
+      selectKeys: []
     }
   },
   created() {
@@ -94,12 +99,33 @@ export default {
       this.addCateDialogVisible = true
       this.getCatePidList()
     },
-    addCate() {
-      console.log(this.addCateForm)
+    async addCate() {
+      // console.log(this.addCateForm)
+      const {data: resp} = await this.$axios.post('category', this.$qs.stringify(this.addCateForm))
+      if (resp.status !== 200) return this.$msg.error(resp.msg)
+      this.$msg.success(resp.msg)
+      this.getCateList()
+      this.closeCateDialog()
     },
     async getCatePidList() {
       const {data: resp} = await this.$axios.get('/category_list', {params: {level: 2}})
       this.catePidList = resp.data.data
+    },
+    changeSeletor() {
+      // console.log(this.selectKeys)
+      if (this.selectKeys.length > 0) {
+        this.addCateForm.pid = this.selectKeys[this.selectKeys.length - 1]
+        this.addCateForm.level = this.selectKeys.length + 1
+      } else {
+        this.addCateForm.pid = 0
+        this.addCateForm.level = 1
+      }
+    },
+    closeCateDialog() {
+      this.$refs.addCateRef.resetFields()
+      this.selectKeys = []
+      this.addCateForm.level = 1
+      this.addCateForm.pid = 0
     }
   }
 }
