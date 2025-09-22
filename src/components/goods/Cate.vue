@@ -16,7 +16,9 @@
         </el-col>
       </el-row>
       <el-row>
-        数据
+        <tree-table :data="cateList" :columns="columns">
+
+        </tree-table>
       </el-row>
 
     </el-card>
@@ -27,6 +29,25 @@
 
 </style>
 
-<script setup lang="ts">
-
+<script >
+export default {
+  data() {
+    return {
+      cateList: [],
+      columns: [{label: '分类名称', prop: 'name'}]
+    }
+  },
+  created() {
+    this.getCateList()
+  },
+  methods: {
+    async getCateList() {
+      const {data: res} = await this.$axios.get('/category_list')
+      // console.log(res.data)
+      if (res.status !== 200) return this.$msg.error(res.msg)
+      this.cateList = res.data.data
+      // this.$msg.success(res.msg)
+    }
+  }
+}
 </script>
