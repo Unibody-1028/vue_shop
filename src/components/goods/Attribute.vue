@@ -27,7 +27,7 @@
         <el-col>
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="静态参数" name="static">静态参数
-              <el-button type="primary" size="mini">增加参数</el-button>
+              <el-button type="primary" size="mini" @click="addDialogVisible=true">增加参数</el-button>
               <el-table :data="staticAttr">
                 <el-table-column type="index"></el-table-column>
                 <el-table-column label="参数名称" prop="name"></el-table-column>
@@ -40,7 +40,7 @@
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="动态参数" name="dynamic">动态参数
-              <el-button type="primary" size="mini">增加参数</el-button>
+              <el-button type="primary" size="mini" @click="addDialogVisible=true">增加参数</el-button>
               <el-table :data="dynamicAttr">
                 <el-table-column type="index"></el-table-column>
                 <el-table-column label="参数名称" prop="name"></el-table-column>
@@ -57,6 +57,15 @@
         </el-col>
       </el-row>
     </el-card>
+    <el-dialog :title="'添加'+titleText" :visible.sync="addDialogVisible" width="30%" @close="addDialogClose">
+      <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="80px">
+        <el-form-item :label="titleText" prop="name">
+          <el-input v-model="addForm.name" ></el-input>
+        </el-form-item>
+        <el-button type="primary" @click="addAttr">立即创建</el-button>
+        <el-button>取消</el-button>
+      </el-form>
+    </el-dialog>
 
   </div>
 
@@ -72,7 +81,14 @@ export default {
       staticAttr: [],
       dynamicAttr: [],
       dynamicFlag: false,
-      staticFlag: false
+      staticFlag: false,
+      addDialogVisible: false,
+      addForm: {
+        name: ''
+      },
+      addFormRules: {
+        name: [{required: true, message: '请填写参数名称', trigger: 'blur'}]
+      }
     }
   },
   created() {
@@ -108,6 +124,21 @@ export default {
       } else {
         this.dynamicAttr = resp.data
         this.dynamicFlag = false
+      }
+    },
+    addAttr() {
+
+    },
+    addDialogClose() {
+      this.$refs.addFormRef.resetFields()
+    }
+  },
+  computed: {
+    titleText() {
+      if (this.activeName === 'static') {
+        return '静态参数'
+      } else {
+        return '动态参数'
       }
     }
   }
