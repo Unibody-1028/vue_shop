@@ -14,7 +14,7 @@
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" icon="el-icon-plus" style="margin-left: 10px">增加商品
+          <el-button type="primary" icon="el-icon-plus" style="margin-left: 10px" @click="addGoodsPage">增加商品
           </el-button>
         </el-col>
       </el-row>
@@ -73,6 +73,9 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    addGoodsPage() {
+      this.$router.push('/add_goods')
     }
   }
 }
