@@ -60,7 +60,7 @@
     <el-dialog :title="'添加'+titleText" :visible.sync="addDialogVisible" width="30%" @close="addDialogClose">
       <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="80px">
         <el-form-item :label="titleText" prop="name">
-          <el-input v-model="addForm.name" ></el-input>
+          <el-input v-model="addForm.name"></el-input>
         </el-form-item>
         <el-button type="primary" @click="addAttr">立即创建</el-button>
         <el-button>取消</el-button>
@@ -103,6 +103,7 @@ export default {
     changeSeletor() {
       this.staticFlag = true
       this.dynamicFlag = true
+      if (this.selectKeys < 3) return
       // console.log(this.selectKeys)
       this.getAttribute()
     },
@@ -127,7 +128,22 @@ export default {
       }
     },
     addAttr() {
-
+      this.$refs.addFormRef.validate(async valid => {
+        if (!valid) return
+        // console.log(this.addForm.name)
+        // console.log(this.activeName)
+        // console.log(this.selectKeys[2])
+        const {data: resp} = await this.$axios.post('/category/attribute',
+          this.$qs.stringify({
+            cid: this.selectKeys[2],
+            type: this.activeName,
+            name: this.addForm.name
+          }))
+        if (resp.status !== 200) return this.$msg.error(resp.msg)
+        this.$msg.success(resp.msg)
+        this.getAttribute()
+        this.addDialogVisible = false
+      })
     },
     addDialogClose() {
       this.$refs.addFormRef.resetFields()
