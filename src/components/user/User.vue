@@ -235,7 +235,7 @@ export default {
     async getUserList() {
       const {data: res} = await this.$axios.get('/user/user_list', {params: this.queryInfo})
       if (res.status !== 200) return this.$message.error(res.msg)
-      console.log(res.data)
+      // console.log(res.data)
       this.total = res.data.totalPage
       this.userList = res.data.users
     },
@@ -338,7 +338,7 @@ export default {
       const {data: res} = await this.$axios.get('/role')
       if (res.status !== 200) return this.$msg.error(res.msg)
       this.roles = res.data
-      return this.$msg.success(res.msg)
+      // return this.$msg.success(res.msg)
     }
   }
 }

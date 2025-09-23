@@ -3,3 +3,6 @@ vue ui --host 127.0.0.1  启动vue
 在 Vue.js 开发中，使用 Prettier 进行代码格式化的快捷键是
 Shift + Alt + F（Windows）或 Shift + Option + F（macOS）
 
+vue hosts
+127.0.0.1 localhost
+::1 localhost
