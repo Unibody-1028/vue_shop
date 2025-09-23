@@ -8,6 +8,7 @@ import Menu from '../components/power/Menu.vue'
 import Role from '../components/power/Role.vue'
 import Cate from '../components/goods/Cate.vue'
 import Attr from '../components/goods/Attribute.vue'
+import Goods from '../components/goods/Goods.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -47,6 +48,10 @@ const routes = [
       {
         path: '/attr_list',
         component: Attr
+      },
+      {
+        path: '/goods_list',
+        component: Goods
       }
     ]
 
