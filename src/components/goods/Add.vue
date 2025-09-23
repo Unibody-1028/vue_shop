@@ -11,7 +11,7 @@
       <el-alert title="增加商品信息" type="success" center show-icon
                 style="margin: 0 auto 10px;width: 600px;"></el-alert>
 
-      <el-steps :active="active" finish-status="success" align-center>
+      <el-steps :prop="active" finish-status="success" align-center>
         <el-step title="商品静态参数"></el-step>
         <el-step title="商品动态参数"></el-step>
         <el-step title="商品图片"></el-step>
@@ -47,8 +47,16 @@
             </el-form-item>
           </el-tab-pane>
 
-          <el-tab-pane label="商品静态参数" name="2">商品静态参数</el-tab-pane>
-          <el-tab-pane label="商品动态参数" name="3">商品动态参数</el-tab-pane>
+          <el-tab-pane label="商品静态参数" name="2">
+            <el-form-item :label="s.name" v-for="s in attr_static" :key="s.id">
+              <el-input v-model="s.val"></el-input>
+            </el-form-item>
+          </el-tab-pane>
+          <el-tab-pane label="商品动态参数" name="3">
+            <el-form-item :label="s.name" v-for="s in attr_dynamic" :key="s.id">
+              <el-input v-model="s.val"></el-input>
+            </el-form-item>
+          </el-tab-pane>
           <el-tab-pane label="商品图片" name="4">商品图片</el-tab-pane>
           <el-tab-pane label="商品内容" name="5">商品内容</el-tab-pane>
         </el-tabs>
@@ -78,7 +86,9 @@ export default {
         weight: [{required: true, message: '请填写商品权重', tirgger: 'blur'}]
       },
       cateIdList: [],
-      selectKeys: []
+      selectKeys: [],
+      attr_static: [],
+      attr_dynamic: []
     }
   },
   created() {
@@ -100,6 +110,18 @@ export default {
       if (this.selectKeys.length < 3) {
         this.$msg.error('请选择商品分类!!!')
         return false
+      }
+      if (activeName === '2') this.getAttribute('static')
+      else if (activeName === '3') this.getAttribute('dynamic')
+    },
+    async getAttribute(type) {
+      const {data: resp} = await this.$axios.get('/category/attr_list',
+        {params: {cid: this.selectKeys[2], type: type}})
+      if (resp.status !== 200) return this.$msg.error(resp.msg)
+      if (type === 'static') {
+        this.attr_static = resp.data
+      } else {
+        this.attr_dynamic = resp.data
       }
     }
   }
