@@ -19,13 +19,13 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-table border style="margin-top: 15px">
+        <el-table border style="margin-top: 15px" :data="goodList">
           <el-table-column type="index"></el-table-column>
           <el-table-column label="商品名称" prop="name"></el-table-column>
-          <el-table-column label="商品价格(元)" prop="price"></el-table-column>
-          <el-table-column label="商品库存" prop="number"></el-table-column>
-          <el-table-column label="操作" >
-            <template slot-scope="" >
+          <el-table-column label="商品价格(元)" prop="price" width="150px"></el-table-column>
+          <el-table-column label="商品库存" prop="number" width="150px"></el-table-column>
+          <el-table-column label="操作" width="200px">
+            <template slot-scope="">
               <el-button size="mini" type="success" icon="el-icon-edit">编辑</el-button>
               <el-button size="mini" type="danger" icon="el-icon-edit">删除</el-button>
             </template>
@@ -37,6 +37,27 @@
 </template>
 
 <script>
+export default {
+  data() {
+    return {
+      goodList: [],
+      qname: ''
+    }
+  },
+  created() {
+    this.getGoodsList()
+  },
+  methods: {
+    async getGoodsList() {
+      const {data: resp} = await this.$axios.get('/goods_list', {
+        params: {name: this.qname}
+      })
+      if (resp.status !== 200) return this.$msg.error(resp.msg)
+      this.goodList = resp.data
+      return this.$msg.success(resp.msg)
+    }
+  }
+}
 
 </script>
 <style>
