@@ -26,8 +26,10 @@
       <el-row>
         <el-col>
           <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="静态参数" name="static">静态参数
-              <el-button type="primary" size="mini" @click="addDialogVisible=true">增加参数</el-button>
+            <el-tab-pane label="静态参数" name="static">
+              <el-button type="primary" size="mini" @click="addDialogVisible=true" :disabled="isBtnDisable">
+                增加参数
+              </el-button>
               <el-table :data="staticAttr">
                 <el-table-column type="index"></el-table-column>
                 <el-table-column label="参数名称" prop="name"></el-table-column>
@@ -39,8 +41,10 @@
                 </el-table-column>
               </el-table>
             </el-tab-pane>
-            <el-tab-pane label="动态参数" name="dynamic">动态参数
-              <el-button type="primary" size="mini" @click="addDialogVisible=true">增加参数</el-button>
+            <el-tab-pane label="动态参数" name="dynamic">
+              <el-button type="primary" size="mini" @click="addDialogVisible=true" :disabled="isBtnDisable">
+                增加参数
+              </el-button>
               <el-table :data="dynamicAttr">
                 <el-table-column type="index"></el-table-column>
                 <el-table-column label="参数名称" prop="name"></el-table-column>
@@ -63,7 +67,7 @@
           <el-input v-model="addForm.name"></el-input>
         </el-form-item>
         <el-button type="primary" @click="addAttr">立即创建</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="addDialogVisible=false">取消</el-button>
       </el-form>
     </el-dialog>
 
@@ -103,7 +107,11 @@ export default {
     changeSeletor() {
       this.staticFlag = true
       this.dynamicFlag = true
-      if (this.selectKeys < 3) return
+      if (this.selectKeys < 3) {
+        this.staticAttr = []
+        this.dynamicAttr = []
+        return
+      }
       // console.log(this.selectKeys)
       this.getAttribute()
     },
@@ -155,6 +163,13 @@ export default {
         return '静态参数'
       } else {
         return '动态参数'
+      }
+    },
+    isBtnDisable() {
+      if (this.selectKeys.length < 3) {
+        return true
+      } else {
+        return false
       }
     }
   }
