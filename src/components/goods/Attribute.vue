@@ -53,7 +53,8 @@
               <el-table :data="dynamicAttr">
                 <el-table-column type="expand">
                   <template slot-scope="scope">
-                    <el-tag style="margin-left: 10px" v-for="(v,i) in scope.row.val" :key="i">
+                    <el-tag style="margin-left: 10px" v-for="(v,i) in scope.row.val" :key="i"
+                            closable @click="removeTag(scope.row,i)">
                       {{ v }}
                     </el-tag>
                     <el-input
@@ -220,6 +221,10 @@ export default {
       if (resp.status !== 200) return this.$msg.success(resp.msg)
       this.$msg.success(resp.msg)
       this.getAttribute()
+    },
+    removeTag(row, i) {
+      row.val.splice(i, 1)
+      this.saveAttribute(row)
     }
   },
   computed: {
