@@ -20,7 +20,8 @@
       </el-steps>
 
       <el-form :model="addForm" ref="addRef" :rules="addRules" label-position="top">
-        <el-tabs v-model="active" :tab-position="'left'" style="margin-top: 20px;margin-left:-10px">
+        <el-tabs v-model="active" :tab-position="'left'" style="margin-top: 20px;margin-left:-10px"
+                 :before-leave="beforeleave">
           <el-tab-pane label="基本信息" name="1">
             <el-form-item label="商品名称" prop="name">
               <el-input v-model="addForm.name"></el-input>
@@ -65,7 +66,10 @@ export default {
         name: '',
         price: 0,
         number: 0,
-        weight: 0
+        weight: 0,
+        cid_one: 0,
+        cid_two: 0,
+        cid_three: 0
       },
       addRules: {
         name: [{required: true, message: '请填写商品名称', tirgger: 'blur'}],
@@ -87,7 +91,16 @@ export default {
       this.cateIdList = resp.data.data
     },
     changeSeletor() {
-
+      if (this.selectKeys.length < 3) return
+      this.addForm.cid_one = this.selectKeys[0]
+      this.addForm.cid_two = this.selectKeys[1]
+      this.addForm.cid_three = this.selectKeys[2]
+    },
+    beforeleave(activeName, oldActiveName) {
+      if (this.selectKeys.length < 3) {
+        this.$msg.error('请选择商品分类!!!')
+        return false
+      }
     }
   }
 }
