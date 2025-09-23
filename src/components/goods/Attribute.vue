@@ -198,8 +198,28 @@ export default {
       })
     },
     handleInputConfirm(row) {
-      row.inputVisible = false
-      row.inputValue = ''
+      if (row.inputValue.trim().length === 0) {
+        row.inputVisible = false
+        row.inputValue = ''
+      } else {
+        row.val.push(row.inputValue.trim())
+        row.inputVisible = false
+        row.inputValue = ''
+        this.saveAttribute(row)
+      }
+    },
+    async saveAttribute(row) {
+      const {data: resp} = await this.$axios.put('/category/attribute', this.$qs.stringify(
+        {
+          id: row.id,
+          name: row.name,
+          cid: row.cid,
+          val: row.val.join(',')
+        })
+      )
+      if (resp.status !== 200) return this.$msg.success(resp.msg)
+      this.$msg.success(resp.msg)
+      this.getAttribute()
     }
   },
   computed: {
