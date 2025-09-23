@@ -7,7 +7,7 @@ import User from '../components/user/User.vue'
 import Menu from '../components/power/Menu.vue'
 import Role from '../components/power/Role.vue'
 import Cate from '../components/goods/Cate.vue'
-
+import Attr from '../components/goods/Attribute.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -43,6 +43,10 @@ const routes = [
       {
         path: '/cate_list', // 子路由路径:URL匹配/role_list时触发
         component: Cate // 子路由组件:渲染Role组件
+      },
+      {
+        path: '/attr_list',
+        component: Attr
       }
     ]
 
