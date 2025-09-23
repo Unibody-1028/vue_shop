@@ -31,6 +31,11 @@
                 增加参数
               </el-button>
               <el-table :data="staticAttr">
+                <el-table-column type="expand">
+                  <template slot-scope="scope">
+                    <el-tag style="margin-left: 10px">{{ scope.row.val }}</el-tag>
+                  </template>
+                </el-table-column>
                 <el-table-column type="index"></el-table-column>
                 <el-table-column label="参数名称" prop="name"></el-table-column>
                 <el-table-column label="操作" prop="name">
@@ -46,6 +51,13 @@
                 增加参数
               </el-button>
               <el-table :data="dynamicAttr">
+                <el-table-column type="expand">
+                  <template slot-scope="scope">
+                    <el-tag style="margin-left: 10px" v-for="(v,i) in scope.row.val" :key="i">
+                      {{ v }}
+                    </el-tag>
+                  </template>
+                </el-table-column>
                 <el-table-column type="index"></el-table-column>
                 <el-table-column label="参数名称" prop="name"></el-table-column>
                 <el-table-column label="操作" prop="name">
@@ -131,6 +143,9 @@ export default {
         this.staticAttr = resp.data
         this.staticFlag = false
       } else {
+        resp.data.forEach(item => {
+          item.val = item.val ? item.val.split(',') : []
+        })
         this.dynamicAttr = resp.data
         this.dynamicFlag = false
       }
