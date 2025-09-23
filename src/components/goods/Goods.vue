@@ -9,8 +9,8 @@
     <el-card>
       <el-row>
         <el-col :span="6">
-          <el-input>
-            <el-button slot="append" icon="el-icon-search">搜索</el-button>
+          <el-input v-model="qname" placeholder="请输入商品名称" clearable @clear="getGoodsList">
+            <el-button slot="append" icon="el-icon-search" @click="getGoodsList" >搜索</el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
