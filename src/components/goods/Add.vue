@@ -7,7 +7,7 @@
       <el-breadcrumb-item>增加商品</el-breadcrumb-item>
     </el-breadcrumb>
 
-    <el-card>
+    <el-card style="height: auto">
       <el-alert title="增加商品信息" type="success" center show-icon
                 style="margin: 0 auto 10px;width: 600px;"></el-alert>
 
@@ -53,8 +53,10 @@
             </el-form-item>
           </el-tab-pane>
           <el-tab-pane label="商品动态参数" name="3">
-            <el-form-item :label="s.name" v-for="s in attr_dynamic" :key="s.id">
-              <el-input v-model="s.val"></el-input>
+            <el-form-item :label="d.name" v-for="d in attr_dynamic" :key="d.id">
+              <el-checkbox-group v-model="d.val">
+                <el-checkbox :label="dv" v-for="(dv,i) in d.val" :key="i" border></el-checkbox>
+              </el-checkbox-group>
             </el-form-item>
           </el-tab-pane>
           <el-tab-pane label="商品图片" name="4">商品图片</el-tab-pane>
@@ -121,6 +123,9 @@ export default {
       if (type === 'static') {
         this.attr_static = resp.data
       } else {
+        resp.data.forEach(item => {
+          item.val = item.val ? item.val.split(',') : []
+        })
         this.attr_dynamic = resp.data
       }
     }
@@ -128,4 +133,7 @@ export default {
 }
 </script>
 <style>
+.el-checkbox {
+  margin: 0 10px 0 0 !important;
+}
 </style>
