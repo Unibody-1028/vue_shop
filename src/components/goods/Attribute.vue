@@ -70,7 +70,9 @@ export default {
       selectKeys: [],
       activeName: 'static',
       staticAttr: [],
-      dynamicAttr: []
+      dynamicAttr: [],
+      dynamicFlag: false,
+      staticFlag: false
     }
   },
   created() {
@@ -83,10 +85,15 @@ export default {
       this.cateIdList = resp.data.data
     },
     changeSeletor() {
-      console.log(this.selectKeys)
+      this.staticFlag = true
+      this.dynamicFlag = true
+      // console.log(this.selectKeys)
+      this.getAttribute()
     },
     handleClick() {
       // console.log(this.activeName)
+      if (!this.staticFlag && this.activeName === 'static') return
+      if (!this.dynamicFlag && this.activeName === 'dynamic') return
       if (this.selectKeys < 3) return
       // console.log(this.selectKeys[2])
       this.getAttribute()
@@ -97,8 +104,10 @@ export default {
       if (resp.status !== 200) return this.$msg.error(resp.msg)
       if (this.activeName === 'static') {
         this.staticAttr = resp.data
+        this.staticFlag = false
       } else {
         this.dynamicAttr = resp.data
+        this.dynamicFlag = false
       }
     }
   }
