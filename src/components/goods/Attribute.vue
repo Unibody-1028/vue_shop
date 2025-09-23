@@ -56,6 +56,22 @@
                     <el-tag style="margin-left: 10px" v-for="(v,i) in scope.row.val" :key="i">
                       {{ v }}
                     </el-tag>
+                    <el-input
+                      class="input-new-tag"
+                      v-if="scope.row.inputVisible"
+                      v-model="scope.row.inputValue"
+                      ref="saveTagInput"
+                      size="small"
+                      @keyup.enter.native="handleInputConfirm(scope.row)"
+                      @blur="handleInputConfirm(scope.row)"
+                    >
+                    </el-input>
+                    <el-button v-else class="button-new-tag"
+                               size="small"
+                               @click="showInput(scope.row)"
+                               style="margin-left: 10px">
+                      + New Tag
+                    </el-button>
                   </template>
                 </el-table-column>
                 <el-table-column type="index"></el-table-column>
@@ -103,7 +119,9 @@ export default {
         name: ''
       },
       addFormRules: {
-        name: [{required: true, message: '请填写参数名称', trigger: 'blur'}]
+        name: [{required: true, message: '请填写参数名称', trigger: 'blur'}],
+        inputVisible: false,
+        inputValue: ''
       }
     }
   },
@@ -145,6 +163,8 @@ export default {
       } else {
         resp.data.forEach(item => {
           item.val = item.val ? item.val.split(',') : []
+          item.inputVisible = false
+          item.inputValue = ''
         })
         this.dynamicAttr = resp.data
         this.dynamicFlag = false
@@ -170,6 +190,16 @@ export default {
     },
     addDialogClose() {
       this.$refs.addFormRef.resetFields()
+    },
+    showInput(row) {
+      row.inputVisible = true
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
+    },
+    handleInputConfirm(row) {
+      row.inputVisible = false
+      row.inputValue = ''
     }
   },
   computed: {
@@ -192,5 +222,8 @@ export default {
 </script>
 
 <style scoped>
-
+.input-new-tag {
+  width: 100px;
+  margin-left: 10px;
+}
 </style>
