@@ -11,7 +11,8 @@
       <el-alert title="增加商品信息" type="success" center show-icon
                 style="margin: 0 auto 10px;width: 600px;"></el-alert>
 
-      <el-steps :prop="active" finish-status="success" align-center>
+      <el-steps :active="stepActive" finish-status="success" align-center>
+        <el-step title="基本信息"></el-step>
         <el-step title="商品静态参数"></el-step>
         <el-step title="商品动态参数"></el-step>
         <el-step title="商品图片"></el-step>
@@ -20,9 +21,9 @@
       </el-steps>
 
       <el-form :model="addForm" ref="addRef" :rules="addRules" label-position="top">
-        <el-tabs v-model="active" :tab-position="'left'" style="margin-top: 20px;margin-left:-10px"
-                 :before-leave="beforeleave">
-          <el-tab-pane label="基本信息" name="1">
+        <el-tabs v-model="tabActive" :tab-position="'left'" style="margin-top: 20px;margin-left:-10px"
+                 :before-leave="beforeleave" @tab-click="(tab) => { stepActive = Number(tab.name) - 1 }">
+          <el-tab-pane label="基本信息" name="0">
             <el-form-item label="商品分类" prop="cid">
               <el-cascader
                 v-model="selectKeys"
@@ -75,8 +76,9 @@
           <el-tab-pane label="商品内容" name="5">商品内容
             <quill-editor v-model="addForm.intorduce">
             </quill-editor>
+            <el-button type="primary" @click="goodsAdd" class="btnAdd">添加商品</el-button>
           </el-tab-pane>
-          <el-button type="primary" @click="goodsAdd" class="btnAdd">添加商品</el-button>
+
         </el-tabs>
       </el-form>
     </el-card>
@@ -89,7 +91,8 @@
 export default {
   data() {
     return {
-      active: '1',
+      tabActive: '0',
+      stepActive: 0,
       addForm: {
         name: '',
         price: 0,
@@ -99,7 +102,9 @@ export default {
         cid_two: 0,
         cid_three: 0,
         pics: [],
-        intorduce: ''
+        intorduce: '',
+        attr_static: [],
+        attr_dynamic: []
       },
       addRules: {
         name: [{required: true, message: '请填写商品名称', tirgger: 'blur'}],
@@ -169,7 +174,27 @@ export default {
       this.previewSrc = file.response.data.url
     },
     goodsAdd() {
+      const staticList = []
+      this.attr_static.forEach(atr => {
+        staticList.push({id: atr.id, val: atr.val})
+      })
+      this.addForm.attr_static = JSON.stringify(staticList)
+
+      const dynamicList = []
+      this.attr_dynamic.forEach(atr => {
+        dynamicList.push({id: atr.id, val: atr.val.join(',')})
+      })
+      this.addForm.attr_dynamic = JSON.stringify(dynamicList)
+      this.addForm.pics = JSON.stringify(this.addForm.pics)
       console.log(this.addForm)
+      console.log(JSON.stringify(this.attr_static))
+      this.saveGoods()
+    },
+    async saveGoods() {
+      // console.log(this.$data)
+      const {data: resp} = await this.$axios.post('/goods', this.$qs.stringify(this.addForm))
+      if (resp.status !== 200) return this.$msg.error(resp.msg)
+      this.$msg.success(resp.msg)
     }
   }
 }
@@ -184,6 +209,6 @@ export default {
 }
 
 .btnAdd {
-  margin-top: 10px!important;
+  margin-top: 10px !important;
 }
 </style>
