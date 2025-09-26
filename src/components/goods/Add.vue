@@ -23,6 +23,16 @@
         <el-tabs v-model="active" :tab-position="'left'" style="margin-top: 20px;margin-left:-10px"
                  :before-leave="beforeleave">
           <el-tab-pane label="基本信息" name="1">
+            <el-form-item label="商品分类" prop="cid">
+              <el-cascader
+                v-model="selectKeys"
+                :options="cateIdList"
+                :props="{ expandTrigger: 'hover',label: 'name',value: 'id'}"
+                clearable separator=">"
+                @change="changeSeletor"
+                style="margin-left: 20px;width:20%">
+              </el-cascader>
+            </el-form-item>
             <el-form-item label="商品名称" prop="name">
               <el-input v-model="addForm.name"></el-input>
             </el-form-item>
@@ -35,16 +45,7 @@
             <el-form-item label="商品权重" prop="weight">
               <el-input v-model="addForm.weight"></el-input>
             </el-form-item>
-            <el-form-item label="商品分类" prop="cid">
-              <el-cascader
-                v-model="selectKeys"
-                :options="cateIdList"
-                :props="{ expandTrigger: 'hover',label: 'name',value: 'id'}"
-                clearable separator=">"
-                @change="changeSeletor"
-                style="margin-left: 20px;width:20%">
-              </el-cascader>
-            </el-form-item>
+
           </el-tab-pane>
 
           <el-tab-pane label="商品静态参数" name="2">
@@ -59,7 +60,18 @@
               </el-checkbox-group>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="商品图片" name="4">商品图片</el-tab-pane>
+          <el-tab-pane label="商品图片" name="4">商品图片
+            <el-upload
+              class="upload-demo"
+              action="/upload_img"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :file-list="fileList"
+              list-type="picture">
+              <el-button size="small" type="primary">点击上传</el-button>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png/jepg文件</div>
+            </el-upload>
+          </el-tab-pane>
           <el-tab-pane label="商品内容" name="5">商品内容</el-tab-pane>
         </el-tabs>
       </el-form>
