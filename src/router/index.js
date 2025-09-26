@@ -9,6 +9,9 @@ import Role from '../components/power/Role.vue'
 import Cate from '../components/goods/Cate.vue'
 import Attr from '../components/goods/Attribute.vue'
 import Goods from '../components/goods/Goods.vue'
+import Add from '../components/goods/Add.vue'
+import Order from '../components/order/Order.vue'
+import Data from '@/components/data/Data.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -52,6 +55,18 @@ const routes = [
       {
         path: '/goods_list',
         component: Goods
+      },
+      {
+        path: '/add_goods',
+        component: Add
+      },
+      {
+        path: '/order_list',
+        component: Order
+      },
+      {
+        path: '/data_list',
+        component: Data
       }
     ]
 

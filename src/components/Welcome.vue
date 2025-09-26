@@ -1,14 +1,12 @@
-<script >
-
-</script>
-
 <template>
   <div>
-    <h1>欢迎使用</h1>
-
+    <h1>欢迎使用电子商城管理系统</h1>
   </div>
 </template>
 
-<style scoped lang="less">
+<script>
+</script>
+
+<style>
 
 </style>
