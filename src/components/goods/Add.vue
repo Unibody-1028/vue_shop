@@ -67,13 +67,16 @@
               :on-preview="handlePreview"
               :on-remove="handleRemove"
               :on-success="handleSuccess"
-              :file-list="fileList"
               list-type="picture">
               <el-button size="small" type="primary">点击上传</el-button>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png/jepg文件</div>
             </el-upload>
           </el-tab-pane>
-          <el-tab-pane label="商品内容" name="5">商品内容</el-tab-pane>
+          <el-tab-pane label="商品内容" name="5">商品内容
+            <quill-editor v-model="addForm.intorduce">
+            </quill-editor>
+          </el-tab-pane>
+          <el-button type="primary" @click="goodsAdd" class="btnAdd">添加商品</el-button>
         </el-tabs>
       </el-form>
     </el-card>
@@ -95,7 +98,8 @@ export default {
         cid_one: 0,
         cid_two: 0,
         cid_three: 0,
-        pics: []
+        pics: [],
+        intorduce: ''
       },
       addRules: {
         name: [{required: true, message: '请填写商品名称', tirgger: 'blur'}],
@@ -117,7 +121,7 @@ export default {
   methods: {
     async getCateIdList() {
       const {data: resp} = await this.$axios.get('/category_list')
-      console.log(resp)
+      // console.log(resp)
       this.cateIdList = resp.data.data
     },
     changeSeletor() {
@@ -157,12 +161,15 @@ export default {
       // console.log(this.addForm.pics)
       const i = this.addForm.pics.findIndex(x => x === file.response.data.path)
       this.addForm.pics.splice(i, 1)
-      console.log(this.addForm.pics)
+      // console.log(this.addForm.pics)
     },
     // 图片预览函数
     handlePreview(file) {
       this.previewVisable = true
       this.previewSrc = file.response.data.url
+    },
+    goodsAdd() {
+      console.log(this.addForm)
     }
   }
 }
@@ -170,5 +177,13 @@ export default {
 <style>
 .el-checkbox {
   margin: 0 10px 0 0 !important;
+}
+
+.ql-editor {
+  min-height: 400px;
+}
+
+.btnAdd {
+  margin-top: 10px!important;
 }
 </style>
