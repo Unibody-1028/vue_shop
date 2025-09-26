@@ -10,11 +10,11 @@
       <el-row>
         <el-col :span="6">
           <el-input v-model="qid" placeholder="请输入订单名称" clearable @clear="getOrderList">
-            <el-button slot="append" icon="el-icon-search" @click="getGoodsList">搜索</el-button>
+            <el-button slot="append" icon="el-icon-search" @click="getOrderList">搜索</el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" icon="el-icon-plus" style="margin-left: 10px" @click="addGoodsPage">增加商品
+          <el-button type="primary" icon="el-icon-plus" style="margin-left: 10px" @click="addOrderPage">新增订单
           </el-button>
         </el-col>
       </el-row>
@@ -37,16 +37,31 @@
               <el-tag v-else type="success">已发货</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="200px">
+          <el-table-column label="操作" width="240px">
             <template slot-scope="scope">
-              <el-button size="mini" type="success" icon="el-icon-edit">编辑</el-button>
-              <el-button size="mini" type="danger" icon="el-icon-edit" @click="removeOrders(scope.row.id)">删除
+              <el-button size="mini" type="primary" icon="el-icon-setting">修改地址</el-button>
+              <el-button size="mini" type="success" icon="el-icon-location" @click="showExpress(scope.row.id)">
+                查看物流
               </el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-row>
     </el-card>
+    <el-dialog title="物流信息" :visible.sync="expressVisible" width="50%">
+      <el-radio-group v-model="reverse" style="margin-top:-40px">
+        <el-radio :label="true">正序</el-radio>
+        <el-radio :label="false">倒序</el-radio>
+      </el-radio-group>
+      <el-timeline :reverse="reverse">
+        <el-timeline-item
+          v-for="(activity, index) in expressList"
+          :key="index"
+          :timestamp="activity.update_time">
+          {{ activity.content }}
+        </el-timeline-item>
+      </el-timeline>
+    </el-dialog>
   </div>
 </template>
 
@@ -55,7 +70,10 @@ export default {
   data() {
     return {
       qid: '',
-      orderList: []
+      orderList: [],
+      expressVisible: false,
+      expressList: [],
+      reverse: false
     }
   },
   created() {
@@ -67,6 +85,16 @@ export default {
       if (resp.status !== 200) return this.$msg.error(resp.msg)
       this.$msg.success(resp.msg)
       this.orderList = resp.data
+    },
+    showExpress(oid) {
+      this.getExpressList(oid)
+      this.expressVisible = true
+    },
+    async getExpressList(oid) {
+      const {data: resp} = await this.$axios.get('/express', {params: {id: oid}})
+      if (resp.status !== 200) return this.$msg.error(resp.msg)
+      this.expressList = resp.data
+      return this.$msg.success(resp.msg)
     }
   }
 }
