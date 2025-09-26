@@ -77,7 +77,9 @@
         </el-tabs>
       </el-form>
     </el-card>
-
+    <el-dialog title="图片预览" :visible.sync="previewVisable" width="50%">
+      <img :src="previewSrc" alt="" style="width: 100% ">
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -104,7 +106,9 @@ export default {
       cateIdList: [],
       selectKeys: [],
       attr_static: [],
-      attr_dynamic: []
+      attr_dynamic: [],
+      previewVisable: false,
+      previewSrc: ''
     }
   },
   created() {
@@ -143,15 +147,22 @@ export default {
         this.attr_dynamic = resp.data
       }
     },
+    // 图片添加函数
     handleSuccess(resp) {
       this.addForm.pics.push(resp.data.path)
     },
+    // 图片删除函数
     handleRemove(file) {
-      console.log(file)
-      console.log(this.addForm.pics)
+      // console.log(file)
+      // console.log(this.addForm.pics)
       const i = this.addForm.pics.findIndex(x => x === file.response.data.path)
       this.addForm.pics.splice(i, 1)
       console.log(this.addForm.pics)
+    },
+    // 图片预览函数
+    handlePreview(file) {
+      this.previewVisable = true
+      this.previewSrc = file.response.data.url
     }
   }
 }
