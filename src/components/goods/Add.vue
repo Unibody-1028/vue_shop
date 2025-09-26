@@ -66,6 +66,7 @@
               action="/upload_img"
               :on-preview="handlePreview"
               :on-remove="handleRemove"
+              :on-success="handleSuccess"
               :file-list="fileList"
               list-type="picture">
               <el-button size="small" type="primary">点击上传</el-button>
@@ -91,7 +92,8 @@ export default {
         weight: 0,
         cid_one: 0,
         cid_two: 0,
-        cid_three: 0
+        cid_three: 0,
+        pics: []
       },
       addRules: {
         name: [{required: true, message: '请填写商品名称', tirgger: 'blur'}],
@@ -140,6 +142,16 @@ export default {
         })
         this.attr_dynamic = resp.data
       }
+    },
+    handleSuccess(resp) {
+      this.addForm.pics.push(resp.data.path)
+    },
+    handleRemove(file) {
+      console.log(file)
+      console.log(this.addForm.pics)
+      const i = this.addForm.pics.findIndex(x => x === file.response.data.path)
+      this.addForm.pics.splice(i, 1)
+      console.log(this.addForm.pics)
     }
   }
 }
