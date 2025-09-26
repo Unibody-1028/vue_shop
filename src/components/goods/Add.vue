@@ -74,7 +74,7 @@
             </el-upload>
           </el-tab-pane>
           <el-tab-pane label="商品内容" name="5">商品内容
-            <quill-editor v-model="addForm.intorduce">
+            <quill-editor v-model="addForm.introduce">
             </quill-editor>
             <el-button type="primary" @click="goodsAdd" class="btnAdd">添加商品</el-button>
           </el-tab-pane>
@@ -102,7 +102,7 @@ export default {
         cid_two: 0,
         cid_three: 0,
         pics: [],
-        intorduce: '',
+        introduce: '',
         attr_static: [],
         attr_dynamic: []
       },
@@ -174,6 +174,9 @@ export default {
       this.previewSrc = file.response.data.url
     },
     goodsAdd() {
+      this.$refs.addRef.validate(async valid => {
+        if (!valid) return this.$msg.error('请填写必要的参数')
+      })
       const staticList = []
       this.attr_static.forEach(atr => {
         staticList.push({id: atr.id, val: atr.val})
@@ -188,6 +191,7 @@ export default {
       this.addForm.pics = JSON.stringify(this.addForm.pics)
       console.log(this.addForm)
       console.log(JSON.stringify(this.attr_static))
+
       this.saveGoods()
     },
     async saveGoods() {
@@ -195,6 +199,7 @@ export default {
       const {data: resp} = await this.$axios.post('/goods', this.$qs.stringify(this.addForm))
       if (resp.status !== 200) return this.$msg.error(resp.msg)
       this.$msg.success(resp.msg)
+      this.$router.push('/goods_list')
     }
   }
 }
